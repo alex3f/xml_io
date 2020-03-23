@@ -1,20 +1,9 @@
 ﻿#include "main/pch.h"
 #include "tests/SerializationTests.h"
 #include "tests/classes/Ints.h"
-#include "xml/XmlDoc.h"
 
 namespace
 {
-	template<typename T>
-	void serialize(T const &value, std::string const &filename)
-	{
-		auto doc = xml::Doc::make_empty();
-
-		value.serialize(doc);
-
-		doc->save_to_file(filename);
-	}
-
 	template<typename T>
 	auto unserialize(std::string const &filename)
 	{
@@ -36,8 +25,8 @@ namespace serialization_tests
 
 			std::string const filename("results/int_serialization.xml");
 
-			serialize(init, filename);
-			auto loaded = unserialize<test::Ints>(filename);
+			test_common_helpers::serialize(init, filename);
+			auto loaded = ::unserialize<test::Ints>(filename);
 
 			assert(loaded && (*loaded == init));
 		}
@@ -52,8 +41,8 @@ namespace serialization_tests
 
 			test::NestedInts const nested_ints(init_ref, init_val, init_ptr);
 
-			serialize(nested_ints, filename);
-			auto loaded = unserialize<test::NestedInts>(filename);
+			test_common_helpers::serialize(nested_ints, filename);
+			auto loaded = ::unserialize<test::NestedInts>(filename);
 
 			assert(loaded && loaded->ptr);
 			assert((loaded->val == init_val) && (*(loaded->ptr) == init_ptr) && (loaded->ref == init_ref));
