@@ -1,7 +1,5 @@
 ﻿#pragma once
 
-#define AS_TEXT(var) #var
-
 namespace xml
 {
 	namespace attributes
