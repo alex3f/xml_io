@@ -3,6 +3,7 @@
 #include "io/IOTraitFunctions.h"
 #include "interfaces/XmlDocNode.h"
 #include "xml/XmlAttributes.h"
+#include "utils/PointerTable.h"
 
 namespace io
 {
