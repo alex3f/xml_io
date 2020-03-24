@@ -7,6 +7,7 @@ namespace serialization_tests
 	{
 		void structs_with_ints();
 		void nested_int_structs();
+		void int_pointers();
 
 	} // namespace ints
 

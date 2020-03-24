@@ -48,6 +48,31 @@ namespace serialization_tests
 			assert((loaded->val == init_val) && (*(loaded->ptr) == init_ptr) && (loaded->ref == init_ref));
 		}
 
+		void int_pointers()
+		{
+			int constexpr init_value1 = 193;
+			int constexpr init_value2 = 0;
+
+			std::string const filename("results/int_pointers.xml");
+
+			test::PointersToInts saved{};
+
+			saved.p1 = factory::create<int>(init_value1);
+			saved.p2 = factory::create<int>(init_value2);
+			saved.p3 = saved.p1;
+			saved.p4 = nullptr;
+
+			test_common_helpers::serialize(saved, filename);
+
+			test::PointersToInts loaded{};
+			loaded.unserialize(xml::Doc::make_by_file(filename));
+
+			assert(loaded.p1 && *(loaded.p1) == init_value1);
+			assert(loaded.p2 && *(loaded.p2) == init_value2);
+			assert(loaded.p3 == loaded.p1);
+			assert(loaded.p4 == nullptr);
+		}
+
 	} // namespace ints
 
 } // namespace serialization_tests

@@ -37,6 +37,11 @@ namespace
 		return test::Ints::unserialize(child);
 	}
 
+	auto create_int_ptr()
+	{
+		return factory::create<int>();
+	}
+
 } // namespace
 
 namespace test
@@ -148,6 +153,18 @@ namespace test
 		}
 
 		return nullptr;
+	}
+
+	void PointersToInts::serialize(XmlDocNodePtr const &node) const
+	{
+		io::XmlIOStream{node} << IO_POINTER_INPUT(p1) << IO_POINTER_INPUT(p2)
+			<< IO_POINTER_INPUT(p3) << IO_POINTER_INPUT(p4);
+	}
+
+	void PointersToInts::unserialize(XmlDocNodePtr const &node)
+	{
+		io::XmlIOStream{node} >> IO_POINTER_OUTPUT(p1, create_int_ptr) >> IO_POINTER_OUTPUT(p2, create_int_ptr)
+			>> IO_POINTER_OUTPUT(p3, create_int_ptr) >> IO_POINTER_OUTPUT(p4, create_int_ptr);
 	}
 
 } // namespace test
