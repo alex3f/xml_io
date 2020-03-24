@@ -62,6 +62,12 @@ template<typename T>
 template<typename CreateFunc>
 ptr_t<T> PointerTable<T>::get_pointer_by_id(PointerId const &id, CreateFunc create_func)
 {
+	if (id.empty())
+	{
+		assert(false && L"Ошибка: попытка получить указатель по пустому id");
+		return nullptr;
+	}
+
 	if (id == nullptr_id)
 	{
 		return nullptr;
