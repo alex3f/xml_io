@@ -17,6 +17,12 @@ namespace serialization_tests
 
 	} // namespace arithmetic
 
+	namespace inheritance
+	{
+		void multiple();
+
+	} // namespace inheritance
+
 } // namespace serialization_tests
 
 namespace test_common_helpers
