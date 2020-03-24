@@ -54,3 +54,8 @@ std::string PugiXmlDoc::get_value() const
 {
 	return PugiXmlDocNode(m_doc).get_value();
 }
+
+std::string PugiXmlDoc::get_attribute_value(std::string const &attribute_name) const
+{
+	return PugiXmlDocNode(m_doc).get_attribute_value(attribute_name);
+}

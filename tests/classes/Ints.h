@@ -54,4 +54,12 @@ namespace test
 		static std::unique_ptr<NestedInts> unserialize(XmlDocNodePtr const &node);
 	};
 
+	struct PointersToInts
+	{
+		ptr_t<int> p1{}, p2{}, p3{}, p4{};
+
+		void serialize(XmlDocNodePtr const &node) const;
+		void unserialize(XmlDocNodePtr const &node);
+	};
+
 } // namespace test

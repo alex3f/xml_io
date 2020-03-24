@@ -64,3 +64,9 @@ std::string PugiXmlDocNode::get_value() const
 {
 	return m_node.child_value();
 }
+
+std::string PugiXmlDocNode::get_attribute_value(std::string const &attr_name) const
+{
+	auto attr = m_node.find_attribute([&attr_name](auto const &attr){ return std::string(attr.name()) == attr_name; });
+	return attr ? attr.value() : "";
+}

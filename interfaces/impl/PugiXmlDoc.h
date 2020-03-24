@@ -20,6 +20,8 @@ public:
 	void set_value(std::string const &value) override;
 	std::string get_value() const override;
 
+	std::string get_attribute_value(std::string const &attribute_name) const override;
+
 private:
 	pugi::xml_document m_doc;
 };
