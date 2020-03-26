@@ -22,6 +22,9 @@ namespace io
 		XmlIOStream& operator<<(PointerInput<T> const &p);
 
 		template<typename T>
+		XmlIOStream& operator<<(InheritancePointerInput<T> const &p);
+
+		template<typename T>
 		XmlIOStream const& operator>>(Variable<T> const &v) const;
 
 		template<typename BaseObjId>
@@ -29,6 +32,9 @@ namespace io
 
 		template<typename T, typename CreateFunc>
 		XmlIOStream const& operator>>(PointerOutput<T, CreateFunc> const &p) const;
+
+		template<typename T, typename CreateByIdentityFunc>
+		XmlIOStream const& operator>>(InheritancePointerOutput<T, CreateByIdentityFunc> const &p) const;
 
 	private:
 		template<typename T>
@@ -83,6 +89,12 @@ namespace io
 	}
 
 	template<typename T>
+	XmlIOStream& XmlIOStream::operator<<(InheritancePointerInput<T> const &p)
+	{
+		return operator<<(PointerInput<T>{p.name, p.ptr});
+	}
+
+	template<typename T>
 	XmlIOStream const& XmlIOStream::operator>>(Variable<T> const &v) const
 	{
 		if (auto child_node = m_node->find_child(io::trait_functions<T>::name(), {xml::attributes::var_name, v.name}))
@@ -120,6 +132,27 @@ namespace io
 			{
 				io::trait_functions<T>::unserialize(*(p.ptr), ptr_node);
 			}
+		}
+
+		return *this;
+	}
+
+	template<typename T, typename CreateByIdentityFunc>
+	XmlIOStream const& XmlIOStream::operator>>(InheritancePointerOutput<T, CreateByIdentityFunc> const &p) const
+	{
+		if (auto ptr_node = m_node->find_child(get_ptr_name<T>(), {xml::attributes::var_name, p.name}))
+		{
+			auto const identity = ptr_node->get_attribute_value(xml::attributes::ptr_identity);
+
+			if (!identity.empty())
+			{
+				auto create_func = p.create_func_by_identity(identity);
+				assert(create_func);
+				if (create_func)
+				{
+					return operator>>(PointerOutput<T, decltype(create_func)>{p.name, p.ptr, create_func});
+				}
+			}		
 		}
 
 		return *this;

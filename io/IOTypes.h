@@ -45,6 +45,21 @@ namespace io
 		CreateFunc create_func;
 	};
 
+	template<typename T>
+	struct InheritancePointerInput
+	{
+		std::string name;
+		ptr_t<T> const &ptr;
+	};
+
+	template<typename T, typename CreateByIdentityFunc>
+	struct InheritancePointerOutput
+	{
+		std::string name;
+		ptr_t<T> &ptr;
+		CreateByIdentityFunc create_func_by_identity;
+	};
+
 	// TODO: убрать или перенести хелперные методы.
 
 	template<typename T>
@@ -70,6 +85,7 @@ namespace io
 	{
 		return io::ReferenceOutput<BaseObjId>{base_obj_id, ref_name};
 	}
+
 	template<typename T>
 	auto pointer_input(char const *ptr_name, ptr_t<T> const &ptr)
 	{
@@ -82,6 +98,18 @@ namespace io
 		return io::PointerOutput<T, CreateFunc>{ptr_name, ptr, create_func};
 	}
 
+	template<typename T>
+	auto inheritance_pointer_input(char const *ptr_name, ptr_t<T> const &ptr)
+	{
+		return io::InheritancePointerInput<T>{ptr_name, ptr};
+	}
+
+	template<typename T, typename CreateByIdentityFunc>
+	auto inheritance_pointer_output(char const *ptr_name, ptr_t<T> &ptr, CreateByIdentityFunc create_by_identity_func)
+	{
+		return io::InheritancePointerOutput<T, CreateByIdentityFunc>{ptr_name, ptr, create_by_identity_func};
+	}
+
 	#define IO_CONSTANT(c) io::constant(#c, c)
 	#define IO_VARIABLE(v) io::variable(#v, v)
 
@@ -90,5 +118,8 @@ namespace io
 
 	#define IO_POINTER_INPUT(ptr) io::pointer_input(#ptr, ptr)
 	#define IO_POINTER_OUTPUT(ptr, create_func) io::pointer_output(#ptr, ptr, create_func)
+
+	#define IO_INHERITANCE_POINTER_INPUT(ptr) io::inheritance_pointer_input(#ptr, ptr)
+	#define IO_INHERITANCE_POINTER_OUTPUT(ptr, create_func) io::inheritance_pointer_output(#ptr, ptr, create_func)
 
 } // namespace io

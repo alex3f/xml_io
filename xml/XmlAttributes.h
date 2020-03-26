@@ -8,6 +8,8 @@ namespace xml
 
 		auto constexpr ptr_id = "ptr_id";
 
+		auto constexpr ptr_identity = "ptr_identity";
+
 	} // namespace attributes
 
 } // namespace xml
