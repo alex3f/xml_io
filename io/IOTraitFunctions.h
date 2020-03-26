@@ -33,6 +33,14 @@ namespace io
 		static void unserialize(T &value, XmlDocNodePtr const &node) { value = std::stof(node->get_value()); }
 	};
 
+	template<>
+	struct trait_functions<std::string>
+	{
+		static auto constexpr name() { return "std::string"; }
+		static void serialize(std::string const &str, XmlDocNodePtr const &node) { node->set_value(str); }
+		static void unserialize(std::string &str, XmlDocNodePtr const &node) { str = std::move(node->get_value()); }
+	};
+
 	template<typename T>
 	extern std::string get_class_name();
 
@@ -41,7 +49,7 @@ namespace io
 	{
 		static auto constexpr name() { return get_class_name<T>(); }
 		static void serialize(T const &value, XmlDocNodePtr const &node) { value.serialize(node); }
-		static void unserialize(T const &value, XmlDocNodePtr const &node) { value.unserialize(node); }
+		static void unserialize(T &value, XmlDocNodePtr const &node) { value.unserialize(node); }
 	};
 
 } // namespace io

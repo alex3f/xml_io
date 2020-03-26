@@ -1,6 +1,7 @@
 ﻿#include "main/pch.h"
 #include "tests/SerializationTests.h"
 #include "tests/classes/Ints.h"
+#include "utils/PointerTable.h"
 
 namespace
 {
@@ -63,6 +64,8 @@ namespace serialization_tests
 			saved.p4 = nullptr;
 
 			test_common_helpers::serialize(saved, filename);
+
+			PointerTable<int>::clear();
 
 			test::PointersToInts loaded{};
 			loaded.unserialize(xml::Doc::make_by_file(filename));
