@@ -3,6 +3,14 @@
 #include "utils/InheritanceGuards.h"
 #include "io/XmlIOStream.h"
 
+namespace
+{
+	auto create_double_ptr()
+	{
+		return factory::create<double>();
+	}
+}
+
 namespace test
 {
 	namespace multiple_inheritance
@@ -129,7 +137,7 @@ namespace test
 		bool Derived2::unserialize(XmlDocNodePtr const &node)
 		{
 			Base::unserialize(node);
-			io::XmlIOStream{node} >> IO_VARIABLE(str) >> IO_POINTER_OUTPUT(ptr, factory::create<double>);
+			io::XmlIOStream{node} >> IO_VARIABLE(str) >> IO_POINTER_OUTPUT(ptr, create_double_ptr);
 			return true;
 		}
 
