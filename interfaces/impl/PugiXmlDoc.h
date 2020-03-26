@@ -20,6 +20,7 @@ public:
 	void set_value(std::string const &value) override;
 	std::string get_value() const override;
 
+	void add_attributes(Attributes const &attributes) const;
 	std::string get_attribute_value(std::string const &attribute_name) const override;
 
 private:

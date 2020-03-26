@@ -12,6 +12,8 @@ public:
 	template<typename CreateFunc>
 	static ptr_t<T> get_pointer_by_id(PointerId const &id, CreateFunc create_func);
 
+	static void clear() { get_table().m_pointers.clear(); }
+
 private:
 	static PointerTable& get_table();
 

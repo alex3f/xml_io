@@ -9,5 +9,8 @@ int main()
 
 	serialization_tests::arithmetic::struct_with_arithmetic_types();
 
+	serialization_tests::inheritance::multiple();
+	serialization_tests::inheritance::diamond();
+
 	return 0;
 }

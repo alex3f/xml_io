@@ -25,5 +25,6 @@ public:
 	virtual void set_value(std::string const &value) = 0;
 	virtual std::string get_value() const = 0;
 
+	virtual void add_attributes(Attributes const &attributes) const = 0;
 	virtual std::string get_attribute_value(std::string const &attribute_name) const = 0;
 };
