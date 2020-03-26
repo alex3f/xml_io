@@ -20,6 +20,8 @@ namespace serialization_tests
 	namespace inheritance
 	{
 		void multiple();
+		void diamond();
+		void double_diamond();
 
 	} // namespace inheritance
 

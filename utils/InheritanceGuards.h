@@ -4,12 +4,8 @@
 
 namespace inheritance
 {
-	struct IdentityTag {};
-	struct VirtualInheritanceTag {}; // NOTE: будет использовано для виртуального наследования.
-
-	template<typename Tag, std::enable_if_t<std::is_same<Tag, IdentityTag>::value ||
-											std::is_same<Tag, VirtualInheritanceTag>::value, int> = 0>
-		class NestedObjectsCounter
+	template<typename Tag>
+	class NestedObjectsCounter
 	{
 	public:
 		virtual ~NestedObjectsCounter() { --objects_count; }
@@ -23,8 +19,10 @@ namespace inheritance
 		static int objects_count;
 	};
 
-	int NestedObjectsCounter<IdentityTag>::objects_count = 0;
-	int NestedObjectsCounter<VirtualInheritanceTag>::objects_count = 0;
+	template<typename Tag>
+	int NestedObjectsCounter<Tag>::objects_count = 0;
+
+	struct IdentityTag {};
 
 	/*
 		Выполняет сериализацию признака класса для первого объекта из цепочки вложенных объектов.
@@ -43,6 +41,22 @@ namespace inheritance
 			if (get_objects_count() == 1)
 			{
 				node->add_attributes({{xml::attributes::ptr_identity, identity}});
+			}
+		}
+	};
+
+	/*
+		Выполняет функцию сериализации для первого объекта из цепочки вложенных объектов.
+	*/
+	template<typename VirtualInheritanceBase>
+	class VirtualGuard : public NestedObjectsCounter<VirtualInheritanceBase>
+	{
+	public:
+		VirtualGuard(std::function<void()> serialization_func) 
+		{ 
+			if (NestedObjectsCounter<VirtualInheritanceBase>::get_objects_count() == 1)
+			{
+				serialization_func();
 			}
 		}
 	};
