@@ -61,7 +61,7 @@ namespace io
 	template<typename T>
 	struct trait_functions<T, std::enable_if_t<is_ptr_t<T>::value>>
 	{
-		static auto constexpr name() 
+		static auto const name() 
 		{ 
 			static std::string const suffix("_ptr");
 			return std::string(io::trait_functions<typename T::element_type>::name()).append(suffix); 
@@ -71,7 +71,7 @@ namespace io
 	template<typename T>
 	struct collection_trait_functions
 	{
-		static auto constexpr name() { static_assert(false, "not specialized"); return "";}
+		static auto constexpr name() { return "";}
 	};
 
 	template<typename T>
