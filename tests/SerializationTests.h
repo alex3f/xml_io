@@ -25,6 +25,8 @@ namespace serialization_tests
 
 	} // namespace inheritance
 
+	void collection();
+
 } // namespace serialization_tests
 
 namespace test_common_helpers

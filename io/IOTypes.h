@@ -60,6 +60,21 @@ namespace io
 		CreateByIdentityFunc create_func_by_identity;
 	};
 
+	template<typename Coll>
+	struct CollectionInput
+	{
+		std::string name;
+		Coll const &coll;
+	};
+
+	template<typename Coll, typename InsertItemFunc>
+	struct CollectionOutput
+	{
+		std::string name;
+		Coll &coll;
+		InsertItemFunc insert_item_func;
+	};
+
 	// TODO: убрать или перенести хелперные методы.
 
 	template<typename T>
@@ -110,6 +125,18 @@ namespace io
 		return io::InheritancePointerOutput<T, CreateByIdentityFunc>{ptr_name, ptr, create_by_identity_func};
 	}
 
+	template<typename Coll>
+	auto collection_input(char const *name, Coll const &coll)
+	{
+		return io::CollectionInput<Coll>{name, coll};
+	}
+
+	template<typename Coll, typename InsertItemFunc>
+	auto collection_output(char const *name, Coll &coll, InsertItemFunc insert_item_func)
+	{
+		return io::CollectionOutput<Coll, InsertItemFunc>{name, coll, insert_item_func};
+	}
+
 	#define IO_CONSTANT(c) io::constant(#c, c)
 	#define IO_VARIABLE(v) io::variable(#v, v)
 
@@ -121,5 +148,8 @@ namespace io
 
 	#define IO_INHERITANCE_POINTER_INPUT(ptr) io::inheritance_pointer_input(#ptr, ptr)
 	#define IO_INHERITANCE_POINTER_OUTPUT(ptr, create_func) io::inheritance_pointer_output(#ptr, ptr, create_func)
+
+	#define IO_COLLECTION_INPUT(coll) io::collection_input(#coll, coll)
+	#define IO_COLLECTION_OUTPUT(coll, insert_item_func) io::collection_output(#coll, coll, insert_item_func)
 
 } // namespace io
