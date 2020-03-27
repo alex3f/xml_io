@@ -24,6 +24,9 @@ namespace io
 		template<typename T>
 		XmlIOStream& operator<<(InheritancePointerInput<T> const &p);
 
+		template<typename Coll>
+		XmlIOStream& operator<<(CollectionInput<Coll> const &c);
+
 		template<typename T>
 		XmlIOStream const& operator>>(Variable<T> const &v) const;
 
@@ -35,6 +38,9 @@ namespace io
 
 		template<typename T, typename CreateByIdentityFunc>
 		XmlIOStream const& operator>>(InheritancePointerOutput<T, CreateByIdentityFunc> const &p) const;
+
+		template<typename Coll, typename InsertItemFunc>
+		XmlIOStream const& operator>>(CollectionOutput<Coll, InsertItemFunc> const &c) const;
 
 	private:
 		template<typename T>
@@ -92,6 +98,32 @@ namespace io
 	XmlIOStream& XmlIOStream::operator<<(InheritancePointerInput<T> const &p)
 	{
 		return operator<<(PointerInput<T>{p.name, p.ptr});
+	}
+
+	template<typename Coll>
+	XmlIOStream& XmlIOStream::operator<<(CollectionInput<Coll> const &c)
+	{
+		using CollValueType = typename Coll::value_type;
+
+		if (auto coll_node = m_node->add_child(io::collection_trait_functions<Coll>::name(), 
+											   {{xml::attributes::var_name, c.name}, 
+											    {xml::attributes::value_type, 
+													io::trait_functions<CollValueType>::name()},
+												{xml::attributes::items_count, std::to_string(c.coll.size())}}))
+		{
+			int index{0};
+
+			for (auto const &coll_item : c.coll)
+			{
+				if (auto coll_item_node = coll_node->add_child(io::trait_functions<CollValueType>::name(), 
+															   {{xml::attributes::index, std::to_string(index++)}}))
+				{
+					io::trait_functions<CollValueType>::serialize(coll_item, coll_item_node);
+				}
+			}
+		}
+
+		return *this;
 	}
 
 	template<typename T>
@@ -153,6 +185,35 @@ namespace io
 					return operator>>(PointerOutput<T, decltype(create_func)>{p.name, p.ptr, create_func});
 				}
 			}		
+		}
+
+		return *this;
+	}
+
+	template<typename Coll, typename InsertItemFunc>
+	XmlIOStream const& XmlIOStream::operator>>(CollectionOutput<Coll, InsertItemFunc> const &c) const
+	{
+		using CollValueType = typename Coll::value_type;
+
+		if (auto coll_node = m_node->find_child(io::collection_trait_functions<Coll>::name(), 
+												{xml::attributes::var_name, c.name}))
+		{
+			auto const count = std::stoi(coll_node->get_attribute_value(xml::attributes::items_count));
+			auto const value_type_name = coll_node->get_attribute_value(xml::attributes::value_type);
+			assert(count >= 0 && !value_type_name.empty());
+
+			CollValueType tmp{};
+
+			for (int i = 0; i < count; ++i)
+			{
+				if (auto coll_value_node = coll_node->find_child(value_type_name, 
+																{xml::attributes::index, std::to_string(i)}))
+				{
+					io::trait_functions<CollValueType>::unserialize(tmp, coll_value_node);
+					c.insert_item_func(c.coll, tmp);
+				}
+			}
+
 		}
 
 		return *this;

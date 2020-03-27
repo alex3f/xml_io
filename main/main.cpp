@@ -12,5 +12,7 @@ int main()
 	serialization_tests::inheritance::multiple();
 	serialization_tests::inheritance::diamond();
 
+	serialization_tests::collection();
+
 	return 0;
 }

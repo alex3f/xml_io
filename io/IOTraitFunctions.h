@@ -45,11 +45,39 @@ namespace io
 	extern std::string get_class_name();
 
 	template<typename T>
-	struct trait_functions<T, std::enable_if_t<std::is_class<T>::value>>
+	struct is_ptr_t : std::false_type {};
+
+	template<typename T>
+	struct is_ptr_t<ptr_t<T>> : std::true_type {};
+
+	template<typename T>
+	struct trait_functions<T, std::enable_if_t<std::is_class<T>::value && !is_ptr_t<T>::value>>
 	{
 		static auto constexpr name() { return get_class_name<T>(); }
 		static void serialize(T const &value, XmlDocNodePtr const &node) { value.serialize(node); }
 		static void unserialize(T &value, XmlDocNodePtr const &node) { value.unserialize(node); }
+	};
+
+	template<typename T>
+	struct trait_functions<T, std::enable_if_t<is_ptr_t<T>::value>>
+	{
+		static auto constexpr name() 
+		{ 
+			static std::string const suffix("_ptr");
+			return std::string(io::trait_functions<typename T::element_type>::name()).append(suffix); 
+		}
+	};
+
+	template<typename T>
+	struct collection_trait_functions
+	{
+		static auto constexpr name() { static_assert(false, "not specialized"); return "";}
+	};
+
+	template<typename T>
+	struct collection_trait_functions<std::vector<T>>
+	{
+		static auto constexpr name() { return "std::vector"; }
 	};
 
 } // namespace io

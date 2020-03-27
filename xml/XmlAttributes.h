@@ -10,6 +10,12 @@ namespace xml
 
 		auto constexpr ptr_identity = "ptr_identity";
 
+		auto constexpr value_type = "element_type";
+
+		auto constexpr items_count = "elements_count";
+
+		auto constexpr index = "index";
+
 	} // namespace attributes
 
 } // namespace xml
